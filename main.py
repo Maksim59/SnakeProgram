@@ -1,4 +1,4 @@
-# Maksim, Surain, Elias
+# Maksim, Surain, Elias, Mitch
 # SNAKE GAME
 # FEATURES = Colour palette for snake, Crowns, Music/sound effects, Game Over Screen, restartable game, high score
 # March 7 2023
