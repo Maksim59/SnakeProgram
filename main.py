@@ -1,6 +1,7 @@
 # Maksim, Surain, Elias
 # SNAKE GAME
-# FEATURES = Colour palette for snake, Crowns, Music/sound effects, Game Over Screen, restartable game
+# FEATURES = Colour palette for snake, Crowns, Music/sound effects, Game Over Screen, restartable game, high score
+# March 7 2023
 
 # import required modules
 # YOU NEED TO DOWNLOAD PLAYSOUND ON PIP OR ON YOUR IDE
