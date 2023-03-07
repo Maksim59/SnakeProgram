@@ -1,54 +1,74 @@
+# Maksim, Surain, Elias
+# SNAKE GAME
+# FEATURES = Colour palette for snake, Crowns, Music/sound effects, Game Over Screen, restartable game
+
 # import required modules
-#YOU NEED TO DOWNLOAD PLAYSOUND ON PIP OR ON YOUR IDE
+# YOU NEED TO DOWNLOAD PLAYSOUND ON PIP OR ON YOUR IDE
 import turtle
 import time
 import random
 from playsound import playsound
 from tkinter import *
+from threading import Thread
+
+# window for buttons
 root = Tk()
 root.geometry('900x700')
 root.configure(bg='light blue')
+####
 
-
-
+# Buttons for colours
 colours = []
+
+
 def green_click():
     global colours
     colours.append('green')
-    root.quit()
+    root.destroy()
+
+
 def orange_click():
     colours.append('orange')
-    root.quit()
+    root.destroy()
+
+
 def purple_click():
     colours.append('purple')
-    root.quit()
+    root.destroy()
 
-x,y = 50,500
 
-label = Label(root, text="Choose which colour you want your snake to be", bg='light blue', fg='Black', font = ('Calibri', 30, 'normal'))
+# Button Creation
+x, y = 50, 500
+
+label = Label(root, text="Choose which colour you want your snake to be", bg='light blue', fg='Black',
+              font=('Calibri', 30, 'normal'))
 label.pack()
-label.place(x=x,y=y)
-Green = Button(root, text="Green Snake", padx=50, pady=50, command=green_click,bg='green',fg='white')
+label.place(x=x, y=y)
+Green = Button(root, text="Green Snake", padx=50, pady=50, command=green_click, bg='green', fg='white')
 Green.pack()
-Orange = Button(root, text="Orange Snake", padx=50, pady=50, command=orange_click,bg='orange',fg='white')
+Orange = Button(root, text="Orange Snake", padx=50, pady=50, command=orange_click, bg='orange', fg='white')
 Orange.pack()
-Purple = Button(root, text="Purple Snake", padx=50, pady=50, command=purple_click,bg='purple', fg='white')
+Purple = Button(root, text="Purple Snake", padx=50, pady=50, command=purple_click, bg='purple', fg='white')
 Purple.pack()
-
-
 
 root.mainloop()
 
 
+# AUDIO
+def game_over_sound():
+    playsound(r"snake_death.mp3")
+
+
+def play_sound():
+    playsound(r"snakepickup.mp3")
+
+
+# CONSTANTS
 MAINCOLOUR = colours[0]
-
-
 
 delay = 0.1
 score = 0
 high_score = 0
-
-
 
 UP = 90
 DOWN = 270
@@ -56,6 +76,7 @@ LEFT = 180
 RIGHT = 0
 wn = turtle.Screen()
 
+# Window creation for turtle
 wn.title("Snake Game")
 wn.bgcolor("black")
 
@@ -70,7 +91,6 @@ head.color(MAINCOLOUR)
 head.penup()
 head.goto(0, 0)
 head.direction = "Stop"
-
 
 # food in the game
 food = turtle.Turtle()
@@ -90,8 +110,12 @@ pen.hideturtle()
 pen.goto(0, 250)
 pen.write("Score : 0  High Score : 0", align="center",
           font=("candara", 24, "bold"))
-
-
+game_over_pen = turtle.Turtle()
+game_over_pen.speed(0)
+game_over_pen.shape('square')
+game_over_pen.color('white')
+game_over_pen.penup()
+game_over_pen.hideturtle()
 
 
 # assigning key directions
@@ -117,17 +141,17 @@ def goright():
 
 def move():
     if head.direction == "up":
-        y = head.ycor()
-        head.sety(y + 20)
+        y1 = head.ycor()
+        head.sety(y1 + 20)
     if head.direction == "down":
-        y = head.ycor()
-        head.sety(y - 20)
+        y1 = head.ycor()
+        head.sety(y1 - 20)
     if head.direction == "left":
-        x = head.xcor()
-        head.setx(x - 20)
+        x1 = head.xcor()
+        head.setx(x1 - 20)
     if head.direction == "right":
-        x = head.xcor()
-        head.setx(x + 20)
+        x1 = head.xcor()
+        head.setx(x1 + 20)
 
 
 wn.listen()
@@ -138,15 +162,20 @@ wn.onkeypress(goright, "d")
 
 segments = []
 
-
 # Main Gameplay
 while True:
-
     wn.update()
     if score == 0:
         head.color(MAINCOLOUR)
     if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
-        time.sleep(1)
+        thread = Thread(target=game_over_sound)
+        thread.start()
+        game_over_pen.showturtle()
+        game_over_pen.write("GAME OVER", align="center", font=("candara", 60, "bold"))
+        time.sleep(3)
+        game_over_pen.clear()
+        game_over_pen.hideturtle()
+        time.sleep(0.5)
         head.goto(0, 0)
         head.direction = "Stop"
         colors = MAINCOLOUR
@@ -161,11 +190,11 @@ while True:
             score, high_score), align="center", font=("candara", 24, "bold"))
 
     if head.distance(food) < 20:
-        playsound(r"snakepickup1.mp3")
+        thread = Thread(target=play_sound)
+        thread.start()
         x = random.randint(-270, 270)
-        y = random.randint(-270, 270)
+        y = random.randint(-270, 250)  # y = (-270,250) so apple doesnt spawn an high score turtle
         food.goto(x, y)
-
 
         # Adding segment
         new_segment = turtle.Turtle()
@@ -217,6 +246,3 @@ while True:
         head.color('light blue')
     if score > 100:
         head.color('red')
-
-
-wn.mainloop()
