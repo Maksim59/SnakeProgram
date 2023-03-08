@@ -224,20 +224,27 @@ while True:
     move()
     for segment in segments:
         if segment.distance(head) < 15:
-            time.sleep(1)
+            thread = Thread(target=game_over_sound)
+            thread.start()
+            game_over_pen.showturtle()
+            game_over_pen.write("GAME OVER", align="center", font=("candara", 60, "bold"))
+            time.sleep(3)
+            game_over_pen.clear()
+            game_over_pen.hideturtle()
+            time.sleep(0.5)
             head.goto(0, 0)
-            head.direction = "stop"
+            head.direction = "Stop"
             colors = MAINCOLOUR
-            shapes = random.choice(['square', 'circle'])
+            shapes = 'square'
             for segment in segments:
                 segment.goto(1000, 1000)
-            segment.clear()
-
+            segments.clear()
             score = 0
             delay = 0.1
             pen.clear()
             pen.write("Score : {} High Score : {} ".format(
                 score, high_score), align="center", font=("candara", 24, "bold"))
+
     time.sleep(delay)
 
     if score > 30:
